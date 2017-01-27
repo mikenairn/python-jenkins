@@ -53,6 +53,7 @@ import socket
 import sys
 import time
 import warnings
+import ssl
 
 import multi_key_dict
 import six
@@ -428,7 +429,8 @@ class Jenkins(object):
                 req.add_header('Authorization', self.auth)
             if add_crumb:
                 self.maybe_add_crumb(req)
-            response = urlopen(req, timeout=self.timeout).read()
+            gcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+            response = urlopen(req, timeout=self.timeout, context=gcontext).read()
             if response is None:
                 raise EmptyResponseException(
                     "Error communicating with server[%s]: "
